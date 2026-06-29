@@ -1,0 +1,35 @@
+## Interface: 20505, 50504
+## Title: SafeItemFollow
+## Notes: Read-only auction price history and vendor-flip finder for TBC Classic Anniversary and Mists Classic.
+## Notes-esES: Historial de precios de subasta (solo lectura) y buscador de reventa al vendedor.
+## Notes-esMX: Historial de precios de subasta (solo lectura) y buscador de reventa al vendedor.
+## Author: SafeItemFollow contributors
+## Version: 0.1.0
+## SavedVariables: SafeItemFollowDB
+## IconTexture: Interface\Icons\INV_Misc_Coin_01
+## Category: Auction House
+## Category-esES: Casa de subastas
+## Category-esMX: Casa de subastas
+## X-License: All Rights Reserved
+
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\AceConsole-3.0\AceConsole-3.0.xml
+Libs\AceGUI-3.0\AceGUI-3.0.xml
+Libs\AceConfig-3.0\AceConfig-3.0.xml
+Libs\AceDBOptions-3.0\AceDBOptions-3.0.xml
+
+Bootstrap.lua
+Locales.lua
+Data.lua
+Rules.lua
+Scanner.lua
+Tooltip.lua
+Overlay.lua
+ActionState.lua
+ActionButton.lua
+MinimapButton.lua
+Config.lua
+Core.lua
