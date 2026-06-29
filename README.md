@@ -10,4 +10,21 @@ scan completo paginado bajo demanda. Incluye una sección de **flip a vendedor**
 **Solo lectura y visualización.** Toda compra/venta la realiza el usuario
 manualmente — sin automatización de acciones, respetando las normas de Blizzard.
 
-El diseño está en [`docs/superpowers/specs/`](docs/superpowers/specs/).
+## Uso
+
+- Copia la carpeta completa `SafeItemFollow` al directorio `Interface/AddOns` del cliente activo.
+- Dentro del juego usa `/sif` o `/safeitemfollow show` para abrir la ventana.
+- Abre la casa de subastas y usa `Full scan` para registrar precios.
+- Agrega items a la watchlist pegando un link o ID numerico.
+- La pestana `Vendor flip` solo muestra oportunidades y ejecuta busquedas de lectura; la compra sigue siendo manual en la UI nativa.
+
+## Desarrollo
+
+Validacion local esperada:
+
+```bash
+luac5.1 -p Bootstrap.lua Locales.lua Data.lua Rules.lua Scanner.lua Tooltip.lua Overlay.lua ActionState.lua ActionButton.lua MinimapButton.lua Config.lua Core.lua
+for t in tests/test_*.lua; do lua5.1 "$t" || exit 1; done
+```
+
+El diseno está en [`docs/superpowers/specs/`](docs/superpowers/specs/). El checklist manual está en [`tests/IN_GAME_CHECKLIST.md`](tests/IN_GAME_CHECKLIST.md).
