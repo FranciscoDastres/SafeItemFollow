@@ -1,6 +1,6 @@
 # SafeItemFollow
 
-Addon de subasta para WoW (TBC Classic Anniversary · Mists Classic) de la familia **Safe\***.
+Addon de subasta para WoW 20 Aniversario (TBC Classic) de la familia **Safe\***.
 
 Escanea precios de la casa de subastas, guarda historial por ítem y visualiza su
 evolución en el tiempo. Modelo híbrido: queries dirigidas a una *watchlist* + un

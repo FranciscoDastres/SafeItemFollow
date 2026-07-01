@@ -32,14 +32,7 @@ local function IsSupportedClient()
     end
 
     local interfaceVersion = tonumber(select(4, GetBuildInfo()))
-    if interfaceVersion == 20505 then
-        return true
-    end
-    if interfaceVersion and interfaceVersion >= 50500 and interfaceVersion < 50600 then
-        return true
-    end
-
-    if WOW_PROJECT_MISTS_CLASSIC and WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC then
+    if interfaceVersion and interfaceVersion >= 20500 and interfaceVersion < 20600 then
         return true
     end
     if WOW_PROJECT_BURNING_CRUSADE_CLASSIC and WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
@@ -60,6 +53,10 @@ end
 
 local function IsAuctionHouseOpen()
     return _G.AuctionFrame and _G.AuctionFrame.IsShown and _G.AuctionFrame:IsShown()
+end
+
+local function IsAuctionQueryAvailable()
+    return type(QueryAuctionItems) == "function"
 end
 
 local function After(delay, callback)
@@ -153,6 +150,10 @@ end
 function Core:StartFullScan()
     if not IsAuctionHouseOpen() then
         Addon:Print(L.MSG_AH_REQUIRED)
+        return
+    end
+    if not IsAuctionQueryAvailable() then
+        Addon:Print(L.MSG_AH_API_MISSING)
         return
     end
 
@@ -344,6 +345,10 @@ end
 local function QueryItemFromEntry(entry)
     if not IsAuctionHouseOpen() then
         Addon:Print(L.MSG_AH_REQUIRED)
+        return
+    end
+    if not IsAuctionQueryAvailable() then
+        Addon:Print(L.MSG_AH_API_MISSING)
         return
     end
     if not entry or not entry.name then
@@ -548,18 +553,47 @@ local function DrawFlip(container)
     end
 end
 
+local function EnsureStoreReady()
+    if NS.Store then
+        return true
+    end
+
+    if Addon.db and Addon.db.global and NS.Data and NS.Config then
+        NS.Store = NS.Data.GetStore(Addon.db.global, NS.Config:RealmKey())
+    end
+    if NS.Store then
+        return true
+    end
+
+    if NS.Config and NS.Config.InitializeDatabase then
+        pcall(function()
+            NS.Config:InitializeDatabase()
+        end)
+    end
+
+    return NS.Store ~= nil
+end
+
 function Core:RefreshActiveTab()
-    if not tabGroup or not NS.Store then
+    if not tabGroup then
         return
     end
 
     tabGroup:ReleaseChildren()
-    if currentTab == "watchlist" then
+    if not EnsureStoreReady() then
+        AddLabel(tabGroup, L.MSG_STORE_UNAVAILABLE, true)
+        AddButton(tabGroup, L.BTN_DEBUG, 120, function()
+            Addon:PrintDebugStatus()
+        end)
+    elseif currentTab == "watchlist" then
         DrawWatchlist(tabGroup)
     elseif currentTab == "market" then
         DrawMarket(tabGroup)
     else
         DrawFlip(tabGroup)
+    end
+    if tabGroup.DoLayout then
+        tabGroup:DoLayout()
     end
 end
 
@@ -639,7 +673,7 @@ function Addon:PrintDebugStatus()
     self:Print(string.format(L.MSG_DEBUG_LINE, "store", StatusLabel(NS.Store)))
     self:Print(string.format(L.MSG_DEBUG_LINE, "slash", StatusLabel(SlashCmdList and SlashCmdList.SAFEITEMFOLLOW)))
     self:Print(string.format(L.MSG_DEBUG_LINE, "auction frame", StatusLabel(_G.AuctionFrame)))
-    self:Print(string.format(L.MSG_DEBUG_LINE, "auction query API", StatusLabel(type(QueryAuctionItems) == "function")))
+    self:Print(string.format(L.MSG_DEBUG_LINE, "auction query API", StatusLabel(IsAuctionQueryAvailable())))
 end
 
 function Addon:RegisterNativeSlashCommands()

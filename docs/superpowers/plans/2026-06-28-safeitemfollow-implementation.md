@@ -12,7 +12,7 @@
 
 These apply to **every** task. Exact values copied from the spec.
 
-- **Target clients:** TBC Classic Anniversary `Interface 20505` and Mists Classic `Interface 50504`. The `.toc` first line is `## Interface: 20505, 50504`.
+- **Target client:** WoW 20th Anniversary TBC Classic `Interface 20505`. The `.toc` first line is `## Interface: 20505`.
 - **Compliance — read-only only.** Use only `QueryAuctionItems`, `GetNumAuctionItems("list")`, `GetAuctionItemInfo`. **Never** call `PlaceAuctionBid` or `PostAuction`. No automation of buy/sell. Any "buy" affordance only highlights/selects a row or triggers a read query; the user performs the purchase.
 - **Throttle respected.** Every auction query passes through `CanSendAuctionQuery()` and waits for the `AUCTION_ITEM_LIST_UPDATE` event before reading or advancing a page.
 - **Vendor price is local.** `vendorSell` comes only from `GetItemInfo` (the `sellPrice` field), never the network.
@@ -96,9 +96,9 @@ Expected to include: `LibStub`, `CallbackHandler-1.0`, `AceAddon-3.0`, `AceDB-3.
 - [ ] **Step 2: Write `SafeItemFollow.toc`**
 
 ```
-## Interface: 20505, 50504
+## Interface: 20505
 ## Title: SafeItemFollow
-## Notes: Read-only auction price history and vendor-flip finder for TBC Classic Anniversary and Mists Classic.
+## Notes: Read-only auction price history and vendor-flip finder for TBC Classic Anniversary.
 ## Notes-esES: Historial de precios de subasta (solo lectura) y buscador de reventa al vendedor.
 ## Notes-esMX: Historial de precios de subasta (solo lectura) y buscador de reventa al vendedor.
 ## Author: SafeItemFollow contributors
@@ -196,7 +196,7 @@ local english = {
     MSG_SCAN_DONE = "Full scan complete: %d listings across %d items.",
     MSG_SCAN_ABORTED = "Scan aborted (auction house closed).",
     MSG_HELP = "Commands: /safeitemfollow show, /safeitemfollow config, /safeitemfollow scan",
-    MSG_UNSUPPORTED = "This build targets TBC Classic Anniversary 2.5.5 or Mists of Pandaria Classic 5.5.x.",
+    MSG_UNSUPPORTED = "This build targets WoW 20th Anniversary TBC Classic 2.5.x.",
 }
 
 local spanish = {
@@ -241,7 +241,7 @@ local spanish = {
     MSG_SCAN_DONE = "Escaneo completo: %d publicaciones en %d objetos.",
     MSG_SCAN_ABORTED = "Escaneo cancelado (subasta cerrada).",
     MSG_HELP = "Comandos: /safeitemfollow show, /safeitemfollow config, /safeitemfollow scan",
-    MSG_UNSUPPORTED = "Esta version apunta a TBC Classic Anniversary 2.5.5 o Mists of Pandaria Classic 5.5.x.",
+    MSG_UNSUPPORTED = "Esta version apunta a WoW 20 Aniversario TBC Classic 2.5.x.",
 }
 
 NS.L = {}
@@ -1576,14 +1576,11 @@ local lastMarketSummary = {}   -- itemID -> summary, from last full scan
 local fullScanState
 
 local function IsSupportedClient()
-    if WOW_PROJECT_MISTS_CLASSIC and WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC then
-        return true
-    end
     if WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
         return WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
     end
     local interfaceVersion = select(4, GetBuildInfo())
-    return interfaceVersion == 20505 or (interfaceVersion >= 50500 and interfaceVersion < 50600)
+    return interfaceVersion and interfaceVersion >= 20500 and interfaceVersion < 20600
 end
 
 local function Money(copper)
@@ -1996,10 +1993,9 @@ Expected: `SafeItemFollow data tests passed`, `SafeItemFollow rules tests passed
 ```markdown
 # In-Game Checklist
 
-Target clients:
+Target client:
 
 - WoW TBC Classic Anniversary 2.5.5 (`Interface 20505`)
-- WoW Mists of Pandaria Classic 5.5.x (`Interface 505xx`)
 
 1. Install the full `SafeItemFollow` folder under the active client AddOns path.
 2. Log in; confirm no Lua errors at load.

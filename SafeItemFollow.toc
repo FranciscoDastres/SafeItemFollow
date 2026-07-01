@@ -1,6 +1,6 @@
-## Interface: 20505, 50504
+## Interface: 20505
 ## Title: SafeItemFollow
-## Notes: Read-only auction price history and vendor-flip finder for TBC Classic Anniversary and Mists Classic.
+## Notes: Read-only auction price history and vendor-flip finder for TBC Classic Anniversary.
 ## Notes-esES: Historial de precios de subasta (solo lectura) y buscador de reventa al vendedor.
 ## Notes-esMX: Historial de precios de subasta (solo lectura) y buscador de reventa al vendedor.
 ## Author: SafeItemFollow contributors

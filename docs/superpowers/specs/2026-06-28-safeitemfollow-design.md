@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-06-28
 **Estado:** Aprobado, pendiente de plan de implementación
-**Objetivo de cliente (WoW):** TBC Classic Anniversary (Interface 20505) y Mists Classic (50504)
+**Objetivo de cliente (WoW):** WoW 20 Aniversario / TBC Classic Anniversary (Interface 20505)
 
 ## Resumen
 
@@ -17,8 +17,8 @@ manual; el addon solo lee y visualiza.
 ## Filosofía de compliance (el "Safe")
 
 - **Solo lectura** de la subasta vía API clásica: `QueryAuctionItems`,
-  `GetNumAuctionItems("list")`, `GetAuctionItemInfo`. Válida en TBC (20505) y
-  MoP Classic (50504). No es acción protegida → el scan puede dispararse solo
+  `GetNumAuctionItems("list")`, `GetAuctionItemInfo`. Válida en TBC Classic
+  Anniversary (20505). No es acción protegida → el scan puede dispararse solo
   al abrir la AH.
 - **Throttle respetado:** cada query pasa por `CanSendAuctionQuery()` y espera
   el evento `AUCTION_ITEM_LIST_UPDATE`. El scan paginado avanza página a página
@@ -52,7 +52,7 @@ tabla de `NS`.
 
 ### `.toc`
 ```
-## Interface: 20505, 50504
+## Interface: 20505
 ## Title: SafeItemFollow
 ## SavedVariables: SafeItemFollowDB
 ## Category: Auction House

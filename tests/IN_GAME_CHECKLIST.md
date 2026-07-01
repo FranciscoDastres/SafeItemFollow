@@ -1,9 +1,8 @@
 # In-Game Checklist
 
-Target clients:
+Target client:
 
 - WoW TBC Classic Anniversary 2.5.5 (`Interface 20505`)
-- WoW Mists of Pandaria Classic 5.5.x (`Interface 505xx`)
 
 1. Install the full `SafeItemFollow` folder under the active client AddOns path.
 2. Log in and confirm there are no Lua errors during addon load.
