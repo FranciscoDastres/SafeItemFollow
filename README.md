@@ -14,6 +14,7 @@ manualmente — sin automatización de acciones, respetando las normas de Blizza
 
 - Copia la carpeta completa `SafeItemFollow` al directorio `Interface/AddOns` del cliente activo.
 - Dentro del juego usa `/sif` o `/safeitemfollow show` para abrir la ventana.
+- Si no aparece nada, usa `/sif debug` para confirmar que el addon registro comandos, tiene librerias y ve la API de subasta del cliente.
 - Abre la casa de subastas y usa `Full scan` para registrar precios.
 - Agrega items a la watchlist pegando un link o ID numerico.
 - La pestana `Vendor flip` solo muestra oportunidades y ejecuta busquedas de lectura; la compra sigue siendo manual en la UI nativa.

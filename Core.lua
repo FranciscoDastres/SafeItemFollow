@@ -15,11 +15,15 @@ local lastMarketSummary = {}
 local fullScanState
 local retryToken = 0
 local watchQueue = {}
+local nativeSlashRegistered = false
 
 local MAX_DISPLAY_ROWS = 100
 
 local function GetAceGUI()
-    return LibStub("AceGUI-3.0")
+    if not LibStub then
+        return nil
+    end
+    return LibStub("AceGUI-3.0", true)
 end
 
 local function IsSupportedClient()
@@ -566,6 +570,11 @@ end
 
 local function BuildFrame()
     local AceGUI = GetAceGUI()
+    if not AceGUI then
+        Addon:PrintDebugStatus()
+        return false
+    end
+
     frame = AceGUI:Create("Frame")
     frame:SetTitle(L.WINDOW_TITLE)
     frame:SetLayout("Fill")
@@ -589,11 +598,14 @@ local function BuildFrame()
     end)
     frame:AddChild(tabGroup)
     tabGroup:SelectTab(currentTab)
+    return true
 end
 
 function Core:Show()
     if not frame then
-        BuildFrame()
+        if not BuildFrame() then
+            return
+        end
     end
     frame:Show()
     self:RefreshActiveTab()
@@ -613,12 +625,44 @@ function Core:Toggle()
     end
 end
 
+local function StatusLabel(value)
+    if value then
+        return L.MSG_DEBUG_READY
+    end
+    return L.MSG_DEBUG_MISSING
+end
+
+function Addon:PrintDebugStatus()
+    self:Print(L.MSG_DEBUG_HEADER)
+    self:Print(string.format(L.MSG_DEBUG_LINE, "client", StatusLabel(NS.IsSupportedClient)))
+    self:Print(string.format(L.MSG_DEBUG_LINE, "AceGUI-3.0", StatusLabel(LibStub and LibStub("AceGUI-3.0", true))))
+    self:Print(string.format(L.MSG_DEBUG_LINE, "store", StatusLabel(NS.Store)))
+    self:Print(string.format(L.MSG_DEBUG_LINE, "slash", StatusLabel(SlashCmdList and SlashCmdList.SAFEITEMFOLLOW)))
+    self:Print(string.format(L.MSG_DEBUG_LINE, "auction frame", StatusLabel(_G.AuctionFrame)))
+    self:Print(string.format(L.MSG_DEBUG_LINE, "auction query API", StatusLabel(type(QueryAuctionItems) == "function")))
+end
+
+function Addon:RegisterNativeSlashCommands()
+    if nativeSlashRegistered or type(SlashCmdList) ~= "table" then
+        return
+    end
+
+    _G.SLASH_SAFEITEMFOLLOW1 = "/safeitemfollow"
+    _G.SLASH_SAFEITEMFOLLOW2 = "/sif"
+    SlashCmdList.SAFEITEMFOLLOW = function(input)
+        Addon:HandleSlash(input)
+    end
+    nativeSlashRegistered = true
+end
+
 function Addon:HandleSlash(input)
     local command = tostring(input or ""):match("^%s*(.-)%s*$"):lower()
     if command == "config" or command == "options" then
         NS.Config:Open()
     elseif command == "scan" then
         NS.Core:StartFullScan()
+    elseif command == "debug" or command == "status" then
+        self:PrintDebugStatus()
     elseif command == "show" or command == "" then
         NS.Core:Show()
     elseif command == "hide" then
@@ -673,12 +717,16 @@ function Addon:OnInitialize()
     NS.Overlay:Initialize()
     NS.MinimapButton:Initialize()
     self:RegisterEvents()
-    self:RegisterChatCommand("safeitemfollow", "HandleSlash")
-    self:RegisterChatCommand("sif", "HandleSlash")
+    self:RegisterNativeSlashCommands()
 end
 
 function Addon:OnEnable()
+    self:RegisterNativeSlashCommands()
     if not NS.IsSupportedClient then
         self:Print(L.MSG_UNSUPPORTED)
+    else
+        self:Print(L.MSG_LOADED)
     end
 end
+
+Addon:RegisterNativeSlashCommands()
